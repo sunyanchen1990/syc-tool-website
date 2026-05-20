@@ -65,7 +65,7 @@ const MODULES = [
     mock: `
       <div class="mock-inner mock-clip">
         <div class="row"><span>{"name":"syc-tool"}</span><span>2m</span></div>
-        <div class="row"><span>npm run install:mac</span><span>5m</span></div>
+        <div class="row"><span>curl … install.sh | bash</span><span>5m</span></div>
         <div class="row"><span>export PATH=...</span><span>12m</span></div>
       </div>`,
     heroPanel: null,
@@ -392,93 +392,7 @@ const DOWNLOAD_META = {
 };
 
 function getInstallCommand() {
-  // 安装逻辑走 main；应用版本由脚本从 GitHub Releases API 解析
   return `curl -fsSL https://raw.githubusercontent.com/${DOWNLOAD_META.repo}/main/scripts/install.sh | bash`;
-}
-
-function getDownloadMethods(version) {
-  return [
-    {
-      id: 'curl',
-      icon: '⚡',
-      tag: '推荐',
-      title: '终端一键安装',
-      desc: '复制命令到「终端」回车即可。自动下载并安装到「用户/应用程序」，无需管理员密码，也不会出现「文件已损坏」。',
-      command: getInstallCommand(),
-      link: null,
-      linkText: null,
-    },
-    {
-      id: 'dmg',
-      icon: '💿',
-      tag: '手动',
-      title: 'DMG 安装包',
-      desc: '下载后打开 DMG，请双击「安装 SYC-TOOL.command」（勿直接双击 App）。若已拖入应用程序却提示损坏：xattr -cr ~/Applications/SYC-TOOL.app',
-      command: null,
-      link: null,
-      linkText: null,
-    },
-    {
-      id: 'brew',
-      icon: '🍺',
-      tag: '可选',
-      title: 'Homebrew',
-      desc: '无需 brew tap（避免克隆整仓卡住）。需已安装 Homebrew，一条命令装到用户目录。',
-      command: `brew install --cask --no-quarantine --appdir="$HOME/Applications" https://raw.githubusercontent.com/sunyanchen1990/syc-tool/main/Casks/syc-tool.rb`,
-      link: `${DOWNLOAD_META.repoUrl}/blob/main/Casks/syc-tool.rb`,
-      linkText: '查看 Cask 配方',
-    },
-  ];
-}
-
-function renderDownloadMethods() {
-  const el = document.getElementById('download-methods');
-  if (!el) return;
-
-  el.innerHTML = getDownloadMethods(el.dataset.version || DOWNLOAD_META.fallbackVersion)
-    .map(
-      (m) => `
-    <article class="download-method" data-method="${m.id}">
-      <div class="download-method-head">
-        <span class="download-method-icon" aria-hidden="true">${m.icon}</span>
-        <h3>${m.title}</h3>
-        ${m.tag ? `<span class="download-method-tag">${m.tag}</span>` : ''}
-      </div>
-      <p class="download-method-desc">${m.desc}</p>
-      ${
-        m.command
-          ? `<pre class="download-cmd"><span class="download-cmd-text">${escapeHtml(m.command)}</span><button type="button" class="download-copy" aria-label="复制命令">复制</button></pre>`
-          : ''
-      }
-      ${m.link ? `<a class="download-method-link" href="${m.link}" rel="noopener">${m.linkText} →</a>` : ''}
-    </article>`
-    )
-    .join('');
-
-  el.querySelectorAll('.download-copy').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const text = btn.closest('.download-cmd')?.querySelector('.download-cmd-text')?.textContent?.trim() || '';
-      try {
-        await navigator.clipboard.writeText(text);
-        btn.textContent = '已复制';
-        btn.classList.add('copied');
-        setTimeout(() => {
-          btn.textContent = '复制';
-          btn.classList.remove('copied');
-        }, 1600);
-      } catch {
-        btn.textContent = '请手动复制';
-      }
-    });
-  });
-}
-
-function escapeHtml(s) {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 }
 
 async function initDownloadSection() {
@@ -486,12 +400,14 @@ async function initDownloadSection() {
   const dmgBtn = document.getElementById('download-dmg-btn');
   const installCmdEl = document.getElementById('download-install-cmd');
   const installCopyBtn = document.getElementById('download-install-copy');
-  const methodsEl = document.getElementById('download-methods');
   let version = DOWNLOAD_META.fallbackVersion;
   let dmgUrl = null;
 
   try {
-    const res = await fetch(`https://api.github.com/repos/${DOWNLOAD_META.repo}/releases/latest`);
+    const res = await fetch(
+      `https://api.github.com/repos/${DOWNLOAD_META.repo}/releases/latest`,
+      { headers: { Accept: 'application/vnd.github+json' } }
+    );
     if (res.ok) {
       const data = await res.json();
       version = (data.tag_name || '').replace(/^v/, '') || version;
@@ -510,14 +426,7 @@ async function initDownloadSection() {
 
   const installCmd = getInstallCommand();
 
-  if (methodsEl) methodsEl.dataset.version = version;
-
-  if (versionEl) {
-    versionEl.textContent = dmgUrl
-      ? `最新版本 v${version} · Apple Silicon · 推荐终端一键安装`
-      : `当前文档版本 v${version} · 安装包见 GitHub Releases`;
-  }
-
+  if (versionEl) versionEl.textContent = `当前版本 v${version}`;
   if (installCmdEl) installCmdEl.textContent = installCmd;
 
   if (installCopyBtn) {
@@ -526,7 +435,7 @@ async function initDownloadSection() {
         await navigator.clipboard.writeText(installCmd);
         installCopyBtn.textContent = '已复制';
         setTimeout(() => {
-          installCopyBtn.textContent = '复制命令';
+          installCopyBtn.textContent = '复制安装命令';
         }, 1600);
       } catch {
         installCopyBtn.textContent = '请手动复制';
@@ -539,8 +448,6 @@ async function initDownloadSection() {
     if (dmgUrl) dmgBtn.setAttribute('download', '');
     else dmgBtn.removeAttribute('download');
   }
-
-  renderDownloadMethods();
 }
 
 function initHeaderOffset() {

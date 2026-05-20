@@ -36,7 +36,7 @@ export const HERO_PANELS = {
   clipboard: `
     <div class="hero-mock hero-mock-clip mock-clip">
       <div class="row"><span>{"app":"SYC-TOOL"}</span><span>1m</span></div>
-      <div class="row"><span>npm run install:mac</span><span>3m</span></div>
+      <div class="row"><span>复制安装命令…</span><span>3m</span></div>
       <div class="row dim"><span>export PATH=…</span><span>8m</span></div>
     </div>`,
   wallpaper: `

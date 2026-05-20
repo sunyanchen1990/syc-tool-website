@@ -1093,6 +1093,47 @@ img {
   margin-bottom: 2.5rem;
 }
 
+.download-steps {
+  max-width: 28rem;
+  margin: 0 auto 1.25rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: dlstep;
+  text-align: left;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.download-steps li {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.55rem;
+  counter-increment: dlstep;
+}
+
+.download-steps li::before {
+  content: counter(dlstep);
+  position: absolute;
+  left: 0;
+  top: 0.05rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: rgba(245, 184, 0, 0.2);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.download-steps strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .download-cmd-hero {
   max-width: 42rem;
   margin: 0 auto 1rem;
@@ -1132,8 +1173,13 @@ img {
   justify-content: center;
   flex-wrap: wrap;
   gap: 1.25rem;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
+}
+
+.download-checklist li::before {
+  content: '· ';
+  color: var(--accent-2);
 }
 
 .download-methods {
