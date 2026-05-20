@@ -34,12 +34,20 @@ npm run build
 
 静态产物在 `dist/`，可部署到 GitHub Pages、Vercel、Nginx 等。
 
+## 在线地址（GitHub Pages）
+
+推送 `main` 分支后自动部署：
+
+**https://sunyanchen1990.github.io/syc-tool-website/**
+
+首次需在仓库 **Settings → Pages → Build and deployment** 中选择 **GitHub Actions**（工作流首次成功运行后通常会自动生效）。
+
 ## 更新实机截图
 
-需与本仓库同级的 [syc-tool](https://github.com/sunyanchen1990/syc-tool) 应用仓库：
+需与官网仓库同目录下的 [syc-tool](https://github.com/sunyanchen1990/syc-tool)（均在 `t5/` 下）：
 
 ```bash
-# 在 syc-tool 仓库根目录
+# 在 t5/syc-tool 目录
 npm run website:capture
 ```
 

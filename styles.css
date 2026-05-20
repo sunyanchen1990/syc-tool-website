@@ -384,7 +384,7 @@ img {
   min-height: 360px;
   background:
     linear-gradient(180deg, rgba(7, 9, 15, 0.4), rgba(7, 9, 15, 0.85)),
-    url('/hero-bg.jpg') center / cover;
+    url('hero-bg.jpg') center / cover;
 }
 
 .app-sidebar {
