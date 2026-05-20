@@ -384,6 +384,191 @@ function initFloatBallSection() {
   });
 }
 
+const DOWNLOAD_META = {
+  repo: 'sunyanchen1990/syc-tool',
+  repoUrl: 'https://github.com/sunyanchen1990/syc-tool',
+  releasesUrl: 'https://github.com/sunyanchen1990/syc-tool/releases/latest',
+  websiteUrl: 'https://sunyanchen1990.github.io/syc-tool-website/',
+  fallbackVersion: '1.0.1',
+  rawBase: 'https://raw.githubusercontent.com/sunyanchen1990/syc-tool/main',
+};
+
+function getDownloadMethods(version) {
+  const v = version || DOWNLOAD_META.fallbackVersion;
+  const tag = version ? `v${version}` : `v${DOWNLOAD_META.fallbackVersion}`;
+  return [
+    {
+      id: 'dmg',
+      icon: '💿',
+      tag: '推荐',
+      title: 'DMG 安装包',
+      desc: '下载后双击，将 SYC-TOOL 拖入「应用程序」即可。',
+      command: null,
+      link: DOWNLOAD_META.releasesUrl,
+      linkText: '打开 Releases 页面',
+    },
+    {
+      id: 'brew',
+      icon: '🍺',
+      tag: '快捷',
+      title: 'Homebrew',
+      desc: '已安装 Homebrew 时一条命令完成（Cask）。',
+      command: `brew tap sunyanchen1990/syc-tool\nbrew install --cask syc-tool`,
+      link: `${DOWNLOAD_META.repoUrl}/blob/main/Casks/syc-tool.rb`,
+      linkText: '查看 Cask 配方',
+    },
+    {
+      id: 'curl',
+      icon: '⚡',
+      tag: '脚本',
+      title: '一键安装脚本',
+      desc: '自动下载最新 Release DMG 并安装到 /Applications。',
+      command: `curl -fsSL ${DOWNLOAD_META.rawBase}/scripts/install-release.sh | bash`,
+      link: `${DOWNLOAD_META.repoUrl}/blob/main/scripts/install-release.sh`,
+      linkText: '查看脚本源码',
+    },
+    {
+      id: 'git',
+      icon: '📦',
+      tag: '源码',
+      title: 'Git 克隆构建',
+      desc: '适合开发者：克隆仓库、安装依赖并打包安装到本机。',
+      command: `git clone ${DOWNLOAD_META.repoUrl}.git\ncd syc-tool\nnpm install\nnpm run install:mac`,
+      link: DOWNLOAD_META.repoUrl,
+      linkText: '浏览仓库',
+    },
+    {
+      id: 'dev',
+      icon: '⌨',
+      tag: '开发',
+      title: '本地开发运行',
+      desc: '不打包，直接启动 Vite + Electron 开发模式。',
+      command: `git clone ${DOWNLOAD_META.repoUrl}.git\ncd syc-tool\nnpm install\nnpm run electron:dev`,
+      link: `${DOWNLOAD_META.repoUrl}#快速开始`,
+      linkText: '开发文档',
+    },
+    {
+      id: 'zip',
+      icon: '📁',
+      tag: '便携',
+      title: 'ZIP 压缩包',
+      desc: '解压后可直接运行 SYC-TOOL.app，无需安装程序。',
+      command: null,
+      link: DOWNLOAD_META.releasesUrl,
+      linkText: '下载 ZIP',
+    },
+    {
+      id: 'npm-brew',
+      icon: '🧰',
+      tag: '脚本',
+      title: 'npm / 仓库脚本',
+      desc: '已克隆仓库时，可用内置脚本安装 Release 或走 Homebrew。',
+      command: `npm run install:release   # 下载最新 DMG\nnpm run install:brew      # Homebrew Cask\nnpm run install:mac       # 本地打包安装`,
+      link: `${DOWNLOAD_META.repoUrl}/tree/main/scripts`,
+      linkText: '全部安装脚本',
+    },
+  ];
+}
+
+function renderDownloadMethods(version) {
+  const el = document.getElementById('download-methods');
+  if (!el) return;
+
+  el.innerHTML = getDownloadMethods(version)
+    .map(
+      (m) => `
+    <article class="download-method" data-method="${m.id}">
+      <div class="download-method-head">
+        <span class="download-method-icon" aria-hidden="true">${m.icon}</span>
+        <h3>${m.title}</h3>
+        ${m.tag ? `<span class="download-method-tag">${m.tag}</span>` : ''}
+      </div>
+      <p class="download-method-desc">${m.desc}</p>
+      ${
+        m.command
+          ? `<pre class="download-cmd"><span class="download-cmd-text">${escapeHtml(m.command)}</span><button type="button" class="download-copy" aria-label="复制命令">复制</button></pre>`
+          : ''
+      }
+      ${m.link ? `<a class="download-method-link" href="${m.link}" rel="noopener">${m.linkText} →</a>` : ''}
+    </article>`
+    )
+    .join('');
+
+  el.querySelectorAll('.download-copy').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = btn.closest('.download-cmd')?.querySelector('.download-cmd-text')?.textContent?.trim() || '';
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 1600);
+      } catch {
+        btn.textContent = '请手动复制';
+      }
+    });
+  });
+}
+
+function escapeHtml(s) {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+async function initDownloadSection() {
+  const versionEl = document.getElementById('download-version');
+  const dmgBtn = document.getElementById('download-dmg-btn');
+  const zipBtn = document.getElementById('download-zip-btn');
+  let version = DOWNLOAD_META.fallbackVersion;
+  let dmgUrl = null;
+  let zipUrl = null;
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${DOWNLOAD_META.repo}/releases/latest`);
+    if (res.ok) {
+      const data = await res.json();
+      version = (data.tag_name || '').replace(/^v/, '') || version;
+      for (const asset of data.assets || []) {
+        const name = asset.name || '';
+        if (name.endsWith('arm64.dmg')) dmgUrl = asset.browser_download_url;
+        if (name.endsWith('arm64.zip')) zipUrl = asset.browser_download_url;
+      }
+      if (!dmgUrl) {
+        const dmg = (data.assets || []).find((a) => a.name?.endsWith('.dmg'));
+        dmgUrl = dmg?.browser_download_url;
+      }
+      if (!zipUrl) {
+        const zip = (data.assets || []).find((a) => a.name?.endsWith('.zip'));
+        zipUrl = zip?.browser_download_url;
+      }
+    }
+  } catch {
+    /* 使用 fallback */
+  }
+
+  if (versionEl) {
+    versionEl.textContent = dmgUrl
+      ? `最新版本 v${version} · Apple Silicon (arm64)`
+      : `当前文档版本 v${version} · 发布包见 GitHub Releases`;
+  }
+
+  if (dmgBtn) {
+    dmgBtn.href = dmgUrl || DOWNLOAD_META.releasesUrl;
+    if (dmgUrl) dmgBtn.setAttribute('download', '');
+  }
+  if (zipBtn) {
+    zipBtn.href = zipUrl || DOWNLOAD_META.releasesUrl;
+    if (zipUrl) zipBtn.setAttribute('download', '');
+  }
+
+  renderDownloadMethods(version);
+}
+
 function initHeaderOffset() {
   document.querySelectorAll('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', (e) => {
@@ -410,6 +595,7 @@ renderFeatureTags();
 renderModules();
 renderHero();
 initFloatBallSection();
+initDownloadSection();
 initReveal();
 initNav();
 initHeaderOffset();

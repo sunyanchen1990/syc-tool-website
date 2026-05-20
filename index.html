@@ -310,21 +310,47 @@
       <!-- Download -->
       <section class="section download" id="download">
         <div class="container">
-          <div class="download-card reveal">
-            <div class="download-glow" aria-hidden="true"></div>
+          <header class="section-head reveal">
             <p class="eyebrow">开始使用</p>
-            <h2>下载 SYC-TOOL</h2>
-            <p>当前面向 <strong>macOS</strong>，安装后即可在「应用程序」中随时打开，数据保存在本机。</p>
-            <div class="download-actions">
-              <a class="btn btn-primary btn-lg" href="#modules">查看功能模块</a>
-              <span class="download-note">支持 Apple Silicon 与 Intel 芯片</span>
+            <h2>多种方式，<span class="gradient-text">随你安装</span></h2>
+            <p class="section-desc">
+              面向 <strong>macOS 11+</strong>（推荐 Apple Silicon）。任选下方方式安装，数据均保存在本机。
+            </p>
+          </header>
+
+          <div class="download-hero reveal">
+            <div class="download-hero-actions">
+              <a
+                class="btn btn-primary btn-lg"
+                id="download-dmg-btn"
+                href="https://github.com/sunyanchen1990/syc-tool/releases/latest"
+                rel="noopener"
+              >
+                下载 DMG（推荐）
+              </a>
+              <a
+                class="btn btn-ghost btn-lg"
+                id="download-zip-btn"
+                href="https://github.com/sunyanchen1990/syc-tool/releases/latest"
+                rel="noopener"
+              >
+                下载 ZIP
+              </a>
             </div>
+            <p class="download-version" id="download-version">正在获取最新版本…</p>
             <ul class="download-checklist">
               <li>✓ 无订阅、无广告</li>
               <li>✓ 数据本地存储</li>
               <li>✓ 支持开机自启（可选）</li>
             </ul>
           </div>
+
+          <div class="download-methods reveal" id="download-methods"></div>
+
+          <p class="download-footnote reveal">
+            所有安装包与脚本均来自
+            <a href="https://github.com/sunyanchen1990/syc-tool" rel="noopener">GitHub 开源仓库</a>，可自行审计。
+          </p>
         </div>
       </section>
     </main>

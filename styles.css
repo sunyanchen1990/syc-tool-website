@@ -1088,69 +1088,153 @@ img {
 }
 
 /* Download */
-.download-card {
-  position: relative;
+.download-hero {
   text-align: center;
-  padding: 3.5rem 2rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  background: var(--bg-panel);
-  overflow: hidden;
+  margin-bottom: 2.5rem;
 }
 
-.download-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 0%, var(--accent-glow), transparent 60%);
-  pointer-events: none;
-}
-
-.download-card h2 {
-  position: relative;
-  margin: 0 0 1rem;
-  font-size: 2rem;
-}
-
-.download-card p {
-  position: relative;
-  color: var(--text-muted);
-  max-width: 520px;
-  margin: 0 auto 1.5rem;
-}
-
-.download-card code {
-  font-family: var(--mono);
-  font-size: 0.85em;
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.4);
-  color: var(--accent-2);
-}
-
-.download-actions {
-  position: relative;
+.download-hero-actions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
-.download-note {
-  font-size: 0.8rem;
+.download-version {
+  margin: 0 0 1.25rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
+  font-family: var(--mono);
 }
 
 .download-checklist {
-  position: relative;
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1.25rem;
   font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.download-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.download-method {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1.15rem 1.2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  text-align: left;
+}
+
+.download-method-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.download-method-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  background: rgba(245, 184, 0, 0.15);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.download-method h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.download-method-tag {
+  margin-left: auto;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-2);
+  border: 1px solid rgba(110, 231, 200, 0.35);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.download-method-desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.download-cmd-text {
+  display: block;
+  padding-right: 0.25rem;
+}
+
+.download-cmd {
+  position: relative;
+  margin: 0;
+  padding: 0.75rem 2.75rem 0.75rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--accent-2);
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.download-copy {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.68rem;
+  font-family: var(--font);
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.download-copy:hover {
+  color: var(--accent);
+  border-color: rgba(245, 184, 0, 0.45);
+}
+
+.download-copy.copied {
+  color: var(--accent-2);
+  border-color: rgba(110, 231, 200, 0.45);
+}
+
+.download-method-link {
+  font-size: 0.8rem;
+  margin-top: auto;
+}
+
+.download-footnote {
+  margin: 2rem 0 0;
+  text-align: center;
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
 
