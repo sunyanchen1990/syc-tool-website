@@ -398,10 +398,10 @@ function getDownloadMethods() {
       icon: '💿',
       tag: '推荐',
       title: 'DMG 安装包',
-      desc: '下载后双击打开，将 SYC-TOOL 拖入「应用程序」文件夹即可。',
+      desc: '点击上方按钮下载，双击打开后将 SYC-TOOL 拖入「应用程序」即可。',
       command: null,
-      link: DOWNLOAD_META.releasesUrl,
-      linkText: '前往下载页面',
+      link: null,
+      linkText: null,
     },
     {
       id: 'brew',
