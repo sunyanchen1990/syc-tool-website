@@ -314,24 +314,26 @@
             <p class="eyebrow">开始使用</p>
             <h2>下载安装，<span class="gradient-text">两种方式</span></h2>
             <p class="section-desc">
-              面向 <strong>macOS 11+</strong>（Apple Silicon）。推荐 DMG 安装，或使用 Homebrew 一键安装。
+              面向 <strong>macOS 11+</strong>（Apple Silicon）。推荐在终端粘贴一条命令完成安装，无需输入系统密码。
             </p>
           </header>
 
           <div class="download-hero reveal">
+            <pre class="download-cmd download-cmd-hero" id="download-install-pre"><code id="download-install-cmd">curl -fsSL …/install.sh | bash</code></pre>
+            <button type="button" class="btn btn-primary btn-lg" id="download-install-copy">复制安装命令</button>
             <a
-              class="btn btn-primary btn-lg"
+              class="btn btn-ghost btn-lg"
               id="download-dmg-btn"
               href="https://github.com/sunyanchen1990/syc-tool/releases/latest"
               rel="noopener"
             >
-              下载 DMG（推荐）
+              或下载 DMG
             </a>
             <p class="download-version" id="download-version">正在获取最新版本…</p>
             <ul class="download-checklist">
-              <li>✓ 无订阅、无广告</li>
-              <li>✓ 数据本地存储</li>
-              <li>✓ 支持开机自启（可选）</li>
+              <li>✓ 安装到用户目录，无需管理员密码</li>
+              <li>✓ 自动处理「文件已损坏」提示</li>
+              <li>✓ 数据本地存储，无订阅无广告</li>
             </ul>
           </div>
 

@@ -391,14 +391,29 @@ const DOWNLOAD_META = {
   fallbackVersion: '1.0.1',
 };
 
-function getDownloadMethods() {
+function getInstallCommand() {
+  // 安装逻辑走 main；应用版本由脚本从 GitHub Releases API 解析
+  return `curl -fsSL ${DOWNLOAD_META.repoUrl}/raw/main/scripts/install.sh | bash`;
+}
+
+function getDownloadMethods(version) {
   return [
+    {
+      id: 'curl',
+      icon: '⚡',
+      tag: '推荐',
+      title: '终端一键安装',
+      desc: '复制命令到「终端」回车即可。自动下载并安装到「用户/应用程序」，无需管理员密码，也不会出现「文件已损坏」。',
+      command: getInstallCommand(),
+      link: null,
+      linkText: null,
+    },
     {
       id: 'dmg',
       icon: '💿',
-      tag: '推荐',
+      tag: '手动',
       title: 'DMG 安装包',
-      desc: '点击上方按钮下载，双击打开后将 SYC-TOOL 拖入「应用程序」即可。',
+      desc: '下载后打开 DMG，请双击「安装 SYC-TOOL.command」（勿直接双击 App）。若已拖入应用程序却提示损坏：xattr -cr ~/Applications/SYC-TOOL.app',
       command: null,
       link: null,
       linkText: null,
@@ -406,10 +421,10 @@ function getDownloadMethods() {
     {
       id: 'brew',
       icon: '🍺',
-      tag: '命令行',
+      tag: '可选',
       title: 'Homebrew',
-      desc: '已安装 Homebrew 时，在终端执行以下命令完成安装。',
-      command: `brew tap sunyanchen1990/syc-tool\nbrew install --cask syc-tool`,
+      desc: '安装到用户目录，无需 sudo。需已安装 Homebrew。',
+      command: `brew tap sunyanchen1990/syc-tool\nbrew install --cask --no-quarantine --appdir="$HOME/Applications" syc-tool`,
       link: `${DOWNLOAD_META.repoUrl}/blob/main/Casks/syc-tool.rb`,
       linkText: '查看 Cask 配方',
     },
@@ -420,7 +435,7 @@ function renderDownloadMethods() {
   const el = document.getElementById('download-methods');
   if (!el) return;
 
-  el.innerHTML = getDownloadMethods()
+  el.innerHTML = getDownloadMethods(el.dataset.version || DOWNLOAD_META.fallbackVersion)
     .map(
       (m) => `
     <article class="download-method" data-method="${m.id}">
@@ -469,6 +484,9 @@ function escapeHtml(s) {
 async function initDownloadSection() {
   const versionEl = document.getElementById('download-version');
   const dmgBtn = document.getElementById('download-dmg-btn');
+  const installCmdEl = document.getElementById('download-install-cmd');
+  const installCopyBtn = document.getElementById('download-install-copy');
+  const methodsEl = document.getElementById('download-methods');
   let version = DOWNLOAD_META.fallbackVersion;
   let dmgUrl = null;
 
@@ -490,10 +508,30 @@ async function initDownloadSection() {
     /* 使用 fallback */
   }
 
+  const installCmd = getInstallCommand();
+
+  if (methodsEl) methodsEl.dataset.version = version;
+
   if (versionEl) {
     versionEl.textContent = dmgUrl
-      ? `最新版本 v${version} · Apple Silicon (arm64)`
+      ? `最新版本 v${version} · Apple Silicon · 推荐终端一键安装`
       : `当前文档版本 v${version} · 安装包见 GitHub Releases`;
+  }
+
+  if (installCmdEl) installCmdEl.textContent = installCmd;
+
+  if (installCopyBtn) {
+    installCopyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(installCmd);
+        installCopyBtn.textContent = '已复制';
+        setTimeout(() => {
+          installCopyBtn.textContent = '复制命令';
+        }, 1600);
+      } catch {
+        installCopyBtn.textContent = '请手动复制';
+      }
+    };
   }
 
   if (dmgBtn) {
