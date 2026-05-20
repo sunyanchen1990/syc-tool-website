@@ -388,8 +388,23 @@ const DOWNLOAD_META = {
   repo: 'sunyanchen1990/syc-tool',
   repoUrl: 'https://github.com/sunyanchen1990/syc-tool',
   releasesUrl: 'https://github.com/sunyanchen1990/syc-tool/releases/latest',
-  fallbackVersion: '1.0.5',
+  fallbackVersion: '1.0.4',
 };
+
+const FIX_AFTER_DOWNLOAD = `DIR="$HOME/Downloads"
+APP=$(find "$DIR" -maxdepth 5 -name "SYC-TOOL.app" -type d 2>/dev/null | head -1)
+if [ -z "$APP" ]; then echo "请先把 ZIP 解压到「下载」文件夹"; exit 1; fi
+BASE="$(dirname "$APP")"
+xattr -dr com.apple.quarantine "$BASE" 2>/dev/null
+xattr -cr "$BASE" 2>/dev/null
+xattr -cr "$APP" 2>/dev/null
+codesign --force --deep --sign - "$APP" 2>/dev/null
+mkdir -p "$HOME/Applications"
+ditto "$APP" "$HOME/Applications/SYC-TOOL.app"
+xattr -cr "$HOME/Applications/SYC-TOOL.app" 2>/dev/null
+codesign --force --deep --sign - "$HOME/Applications/SYC-TOOL.app" 2>/dev/null
+open "$HOME/Applications/SYC-TOOL.app"
+echo "完成"`;
 
 function mirrorAssetUrl(directUrl) {
   if (!directUrl) return [];
@@ -428,6 +443,8 @@ async function initDownloadSection() {
   const dmgBtn = document.getElementById('download-dmg-btn');
   const zipAlt = document.getElementById('download-zip-alt');
   const dmgAlt = document.getElementById('download-dmg-alt');
+  const fixCmdEl = document.getElementById('download-fix-cmd');
+  const fixCopyBtn = document.getElementById('download-fix-copy');
 
   let version = DOWNLOAD_META.fallbackVersion;
   let zipUrl = `https://github.com/${DOWNLOAD_META.repo}/releases/download/v${version}/SYC-TOOL-${version}-arm64.zip`;
@@ -473,6 +490,21 @@ async function initDownloadSection() {
 
   if (zipBtn && zipSize) zipBtn.textContent = `下载 ZIP${formatSize(zipSize)}`;
   if (dmgBtn && dmgSize) dmgBtn.textContent = `下载 DMG${formatSize(dmgSize)}`;
+
+  if (fixCmdEl) fixCmdEl.textContent = FIX_AFTER_DOWNLOAD;
+  if (fixCopyBtn) {
+    fixCopyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(FIX_AFTER_DOWNLOAD);
+        fixCopyBtn.textContent = '已复制';
+        setTimeout(() => {
+          fixCopyBtn.textContent = '复制修复命令';
+        }, 1600);
+      } catch {
+        fixCopyBtn.textContent = '请手动复制';
+      }
+    };
+  }
 }
 
 function initHeaderOffset() {

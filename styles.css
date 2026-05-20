@@ -1239,6 +1239,41 @@ img {
   background: rgba(245, 184, 0, 0.15);
 }
 
+.download-troubleshoot {
+  max-width: 40rem;
+  margin: 0 auto 1.5rem;
+  padding: 1.25rem 1.35rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(245, 100, 100, 0.35);
+  background: rgba(80, 20, 20, 0.25);
+  text-align: left;
+}
+
+.download-troubleshoot h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #ffb4b4;
+}
+
+.download-troubleshoot p {
+  margin: 0 0 0.75rem;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.download-troubleshoot code {
+  font-size: 0.85em;
+  color: var(--text);
+}
+
+.download-troubleshoot .download-cmd {
+  margin-bottom: 0.75rem;
+  font-size: 0.68rem;
+  max-height: 8rem;
+  overflow: auto;
+}
+
 .download-features {
   list-style: none;
   padding: 0;
