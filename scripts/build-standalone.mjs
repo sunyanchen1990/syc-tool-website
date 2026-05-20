@@ -22,13 +22,16 @@ const heroUri = toDataUri(heroBgPath, heroBgPath.endsWith('.png') ? 'image/png' 
 
 let css = fs.readFileSync(path.join(websiteDir, 'styles.css'), 'utf8');
 css = css.replace(
-  /\.app-body\s*\{[^}]*background:\s*linear-gradient[^;]+;/,
+  /\.app-body\s*\{[^}]*\}/s,
   `.app-body {
   display: flex;
   min-height: 360px;
   background:
     linear-gradient(180deg, rgba(7, 9, 15, 0.4), rgba(7, 9, 15, 0.85)),
-    url('${heroUri}');`
+    url('${heroUri}');
+  background-size: cover;
+  background-position: center;
+}`
 );
 
 let mainJs = fs.readFileSync(path.join(websiteDir, 'main.js'), 'utf8');
