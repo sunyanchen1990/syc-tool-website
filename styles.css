@@ -1187,6 +1187,38 @@ img {
   color: var(--accent);
 }
 
+.download-mirrors {
+  max-width: 36rem;
+  margin: 0 auto 1rem;
+  text-align: left;
+  font-size: 0.8rem;
+}
+
+.mirror-row {
+  margin: 0.35rem 0;
+  color: var(--text-muted);
+}
+
+.mirror-label {
+  display: inline-block;
+  min-width: 5.5rem;
+  color: var(--text-muted);
+}
+
+.download-mirrors a {
+  color: var(--accent-2);
+  text-decoration: none;
+}
+
+.download-mirrors a:hover {
+  text-decoration: underline;
+}
+
+.download-mirrors .sep {
+  margin: 0 0.35rem;
+  opacity: 0.45;
+}
+
 .download-checklist {
   list-style: none;
   padding: 0;

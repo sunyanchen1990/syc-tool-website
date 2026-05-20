@@ -1,5 +1,6 @@
 /** SYC-TOOL 官网 — 模块数据与交互 */
 import { HERO_PANELS } from './hero-panels.js';
+import { INSTALL_EMBED, FIX_LOCAL } from './install-embed.js';
 
 const MODULES = [
   {
@@ -391,17 +392,25 @@ const DOWNLOAD_META = {
   fallbackVersion: '1.0.2',
 };
 
-function getScriptUrl(filename) {
-  const base = import.meta.env.BASE_URL || '/';
-  return new URL(filename, window.location.href).href;
+function getInstallCommand() {
+  return `bash <<'SYC_INSTALL'\n${INSTALL_EMBED}\nSYC_INSTALL`;
 }
 
-function getInstallCommand() {
-  return `curl -fsSL ${getScriptUrl('install.sh')} | bash`;
+function getInstallCommandPreview() {
+  return 'bash <<\'SYC_INSTALL\'\n# …安装脚本已内嵌，点击「复制安装命令」粘贴到终端即可\nSYC_INSTALL';
 }
 
 function getFixCommand() {
-  return `curl -fsSL ${getScriptUrl('fix-app.sh')} | bash`;
+  return FIX_LOCAL;
+}
+
+function mirrorAssetUrl(directUrl) {
+  if (!directUrl) return [];
+  return [
+    { label: 'GitHub', url: directUrl },
+    { label: '镜像加速', url: `https://ghfast.top/${directUrl}` },
+    { label: '镜像 2', url: `https://mirror.ghproxy.com/${directUrl}` },
+  ];
 }
 
 async function initDownloadSection() {
@@ -436,9 +445,12 @@ async function initDownloadSection() {
 
   const installCmd = getInstallCommand();
   const fixCmd = getFixCommand();
+  const zipDirect = `https://github.com/${DOWNLOAD_META.repo}/releases/download/v${version}/SYC-TOOL-${version}-arm64.zip`;
 
   if (versionEl) versionEl.textContent = `当前版本 v${version}`;
-  if (installCmdEl) installCmdEl.textContent = installCmd;
+  if (installCmdEl) installCmdEl.textContent = getInstallCommandPreview();
+
+  renderDownloadMirrors(mirrorAssetUrl(zipDirect), mirrorAssetUrl(dmgUrl));
 
   const bindCopy = (btn, text, label) => {
     if (!btn) return;
@@ -459,10 +471,24 @@ async function initDownloadSection() {
   bindCopy(fixCopyBtn, fixCmd, '复制修复命令');
 
   if (dmgBtn) {
-    dmgBtn.href = dmgUrl || DOWNLOAD_META.releasesUrl;
+    const mirrors = mirrorAssetUrl(dmgUrl);
+    dmgBtn.href = mirrors[0]?.url || DOWNLOAD_META.releasesUrl;
     if (dmgUrl) dmgBtn.setAttribute('download', '');
     else dmgBtn.removeAttribute('download');
   }
+}
+
+function renderDownloadMirrors(zipMirrors, dmgMirrors) {
+  const el = document.getElementById('download-mirrors');
+  if (!el) return;
+  const row = (title, mirrors) => {
+    if (!mirrors?.length) return '';
+    const links = mirrors
+      .map((m) => `<a href="${m.url}" rel="noopener" target="_blank">${m.label}</a>`)
+      .join('<span class="sep">·</span>');
+    return `<p class="mirror-row"><span class="mirror-label">${title}</span>${links}</p>`;
+  };
+  el.innerHTML = row('ZIP 下载', zipMirrors) + row('DMG 下载', dmgMirrors);
 }
 
 function initHeaderOffset() {
