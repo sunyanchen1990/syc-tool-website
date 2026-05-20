@@ -393,7 +393,7 @@ const DOWNLOAD_META = {
 
 function getInstallCommand() {
   // 安装逻辑走 main；应用版本由脚本从 GitHub Releases API 解析
-  return `curl -fsSL ${DOWNLOAD_META.repoUrl}/raw/main/scripts/install.sh | bash`;
+  return `curl -fsSL https://raw.githubusercontent.com/${DOWNLOAD_META.repo}/main/scripts/install.sh | bash`;
 }
 
 function getDownloadMethods(version) {
@@ -423,8 +423,8 @@ function getDownloadMethods(version) {
       icon: '🍺',
       tag: '可选',
       title: 'Homebrew',
-      desc: '安装到用户目录，无需 sudo。需已安装 Homebrew。',
-      command: `brew tap sunyanchen1990/syc-tool\nbrew install --cask --no-quarantine --appdir="$HOME/Applications" syc-tool`,
+      desc: '无需 brew tap（避免克隆整仓卡住）。需已安装 Homebrew，一条命令装到用户目录。',
+      command: `brew install --cask --no-quarantine --appdir="$HOME/Applications" https://raw.githubusercontent.com/sunyanchen1990/syc-tool/main/Casks/syc-tool.rb`,
       link: `${DOWNLOAD_META.repoUrl}/blob/main/Casks/syc-tool.rb`,
       linkText: '查看 Cask 配方',
     },
