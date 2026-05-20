@@ -388,7 +388,7 @@ const DOWNLOAD_META = {
   repo: 'sunyanchen1990/syc-tool',
   repoUrl: 'https://github.com/sunyanchen1990/syc-tool',
   releasesUrl: 'https://github.com/sunyanchen1990/syc-tool/releases/latest',
-  fallbackVersion: '1.0.3',
+  fallbackVersion: '1.0.4',
 };
 
 function mirrorAssetUrl(directUrl) {
