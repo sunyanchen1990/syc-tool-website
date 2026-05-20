@@ -388,11 +388,20 @@ const DOWNLOAD_META = {
   repo: 'sunyanchen1990/syc-tool',
   repoUrl: 'https://github.com/sunyanchen1990/syc-tool',
   releasesUrl: 'https://github.com/sunyanchen1990/syc-tool/releases/latest',
-  fallbackVersion: '1.0.1',
+  fallbackVersion: '1.0.2',
 };
 
+function getScriptUrl(filename) {
+  const base = import.meta.env.BASE_URL || '/';
+  return new URL(filename, window.location.href).href;
+}
+
 function getInstallCommand() {
-  return `curl -fsSL https://raw.githubusercontent.com/${DOWNLOAD_META.repo}/main/scripts/install.sh | bash`;
+  return `curl -fsSL ${getScriptUrl('install.sh')} | bash`;
+}
+
+function getFixCommand() {
+  return `curl -fsSL ${getScriptUrl('fix-app.sh')} | bash`;
 }
 
 async function initDownloadSection() {
@@ -400,6 +409,7 @@ async function initDownloadSection() {
   const dmgBtn = document.getElementById('download-dmg-btn');
   const installCmdEl = document.getElementById('download-install-cmd');
   const installCopyBtn = document.getElementById('download-install-copy');
+  const fixCopyBtn = document.getElementById('download-fix-copy');
   let version = DOWNLOAD_META.fallbackVersion;
   let dmgUrl = null;
 
@@ -425,23 +435,28 @@ async function initDownloadSection() {
   }
 
   const installCmd = getInstallCommand();
+  const fixCmd = getFixCommand();
 
   if (versionEl) versionEl.textContent = `当前版本 v${version}`;
   if (installCmdEl) installCmdEl.textContent = installCmd;
 
-  if (installCopyBtn) {
-    installCopyBtn.onclick = async () => {
+  const bindCopy = (btn, text, label) => {
+    if (!btn) return;
+    btn.onclick = async () => {
       try {
-        await navigator.clipboard.writeText(installCmd);
-        installCopyBtn.textContent = '已复制';
+        await navigator.clipboard.writeText(text);
+        btn.textContent = '已复制';
         setTimeout(() => {
-          installCopyBtn.textContent = '复制安装命令';
+          btn.textContent = label;
         }, 1600);
       } catch {
-        installCopyBtn.textContent = '请手动复制';
+        btn.textContent = '请手动复制';
       }
     };
-  }
+  };
+
+  bindCopy(installCopyBtn, installCmd, '复制安装命令');
+  bindCopy(fixCopyBtn, fixCmd, '复制修复命令');
 
   if (dmgBtn) {
     dmgBtn.href = dmgUrl || DOWNLOAD_META.releasesUrl;
