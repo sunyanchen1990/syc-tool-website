@@ -391,9 +391,14 @@ const DOWNLOAD_META = {
   fallbackVersion: '1.0.4',
 };
 
-const FIX_AFTER_DOWNLOAD = `DIR="$HOME/Downloads"
-APP=$(find "$DIR" -maxdepth 5 -name "SYC-TOOL.app" -type d 2>/dev/null | head -1)
-if [ -z "$APP" ]; then echo "请先把 ZIP 解压到「下载」文件夹"; exit 1; fi
+const FIX_AFTER_DOWNLOAD = `APP=$(find "$HOME/Downloads" -maxdepth 5 -name "SYC-TOOL.app" -type d 2>/dev/null | head -1)
+if [ -z "$APP" ]; then
+  APP=$(find /Volumes -maxdepth 3 -name "SYC-TOOL.app" -type d 2>/dev/null | head -1)
+fi
+if [ -z "$APP" ]; then
+  echo "未找到 SYC-TOOL.app：ZIP 请解压到「下载」；DMG 请先双击打开磁盘映像后再运行本命令"
+  exit 1
+fi
 BASE="$(dirname "$APP")"
 xattr -dr com.apple.quarantine "$BASE" 2>/dev/null
 xattr -cr "$BASE" 2>/dev/null
