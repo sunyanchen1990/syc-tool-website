@@ -1,6 +1,5 @@
 /** SYC-TOOL 官网 — 模块数据与交互 */
 import { HERO_PANELS } from './hero-panels.js';
-import { INSTALL_EMBED, FIX_LOCAL } from './install-embed.js';
 
 const MODULES = [
   {
@@ -389,38 +388,52 @@ const DOWNLOAD_META = {
   repo: 'sunyanchen1990/syc-tool',
   repoUrl: 'https://github.com/sunyanchen1990/syc-tool',
   releasesUrl: 'https://github.com/sunyanchen1990/syc-tool/releases/latest',
-  fallbackVersion: '1.0.2',
+  fallbackVersion: '1.0.3',
 };
-
-function getInstallCommand() {
-  return `bash <<'SYC_INSTALL'\n${INSTALL_EMBED}\nSYC_INSTALL`;
-}
-
-function getInstallCommandPreview() {
-  return 'bash <<\'SYC_INSTALL\'\n# …安装脚本已内嵌，点击「复制安装命令」粘贴到终端即可\nSYC_INSTALL';
-}
-
-function getFixCommand() {
-  return FIX_LOCAL;
-}
 
 function mirrorAssetUrl(directUrl) {
   if (!directUrl) return [];
   return [
-    { label: 'GitHub', url: directUrl },
-    { label: '镜像加速', url: `https://ghfast.top/${directUrl}` },
-    { label: '镜像 2', url: `https://mirror.ghproxy.com/${directUrl}` },
+    { label: 'GitHub 直连', url: directUrl },
+    { label: '镜像线路 1', url: `https://ghfast.top/${directUrl}` },
+    { label: '镜像线路 2', url: `https://mirror.ghproxy.com/${directUrl}` },
   ];
+}
+
+function formatSize(bytes) {
+  if (!bytes) return '';
+  const mb = bytes / (1024 * 1024);
+  return mb >= 1 ? ` · 约 ${mb.toFixed(0)} MB` : '';
+}
+
+function bindDownloadButton(btn, mirrors) {
+  if (!btn || !mirrors.length) return;
+  btn.href = mirrors[0].url;
+  btn.setAttribute('download', '');
+}
+
+function renderAltLinks(el, mirrors) {
+  if (!el || mirrors.length < 2) return;
+  const links = mirrors
+    .slice(1)
+    .map((m) => `<a href="${m.url}" rel="noopener" target="_blank">${m.label}</a>`)
+    .join('');
+  el.innerHTML = `<span class="download-alt-label">下载较慢可试</span>${links}`;
+  el.hidden = false;
 }
 
 async function initDownloadSection() {
   const versionEl = document.getElementById('download-version');
+  const zipBtn = document.getElementById('download-zip-btn');
   const dmgBtn = document.getElementById('download-dmg-btn');
-  const installCmdEl = document.getElementById('download-install-cmd');
-  const installCopyBtn = document.getElementById('download-install-copy');
-  const fixCopyBtn = document.getElementById('download-fix-copy');
+  const zipAlt = document.getElementById('download-zip-alt');
+  const dmgAlt = document.getElementById('download-dmg-alt');
+
   let version = DOWNLOAD_META.fallbackVersion;
-  let dmgUrl = null;
+  let zipUrl = `https://github.com/${DOWNLOAD_META.repo}/releases/download/v${version}/SYC-TOOL-${version}-arm64.zip`;
+  let dmgUrl = `https://github.com/${DOWNLOAD_META.repo}/releases/download/v${version}/SYC-TOOL-${version}-arm64.dmg`;
+  let zipSize = 0;
+  let dmgSize = 0;
 
   try {
     const res = await fetch(
@@ -432,63 +445,34 @@ async function initDownloadSection() {
       version = (data.tag_name || '').replace(/^v/, '') || version;
       for (const asset of data.assets || []) {
         const name = asset.name || '';
-        if (name.endsWith('arm64.dmg')) dmgUrl = asset.browser_download_url;
-      }
-      if (!dmgUrl) {
-        const dmg = (data.assets || []).find((a) => a.name?.endsWith('.dmg'));
-        dmgUrl = dmg?.browser_download_url;
+        if (name.endsWith('arm64.zip')) {
+          zipUrl = asset.browser_download_url;
+          zipSize = asset.size || 0;
+        }
+        if (name.endsWith('arm64.dmg')) {
+          dmgUrl = asset.browser_download_url;
+          dmgSize = asset.size || 0;
+        }
       }
     }
   } catch {
-    /* 使用 fallback */
+    /* fallback URLs */
   }
 
-  const installCmd = getInstallCommand();
-  const fixCmd = getFixCommand();
-  const zipDirect = `https://github.com/${DOWNLOAD_META.repo}/releases/download/v${version}/SYC-TOOL-${version}-arm64.zip`;
-
-  if (versionEl) versionEl.textContent = `当前版本 v${version}`;
-  if (installCmdEl) installCmdEl.textContent = getInstallCommandPreview();
-
-  renderDownloadMirrors(mirrorAssetUrl(zipDirect), mirrorAssetUrl(dmgUrl));
-
-  const bindCopy = (btn, text, label) => {
-    if (!btn) return;
-    btn.onclick = async () => {
-      try {
-        await navigator.clipboard.writeText(text);
-        btn.textContent = '已复制';
-        setTimeout(() => {
-          btn.textContent = label;
-        }, 1600);
-      } catch {
-        btn.textContent = '请手动复制';
-      }
-    };
-  };
-
-  bindCopy(installCopyBtn, installCmd, '复制安装命令');
-  bindCopy(fixCopyBtn, fixCmd, '复制修复命令');
-
-  if (dmgBtn) {
-    const mirrors = mirrorAssetUrl(dmgUrl);
-    dmgBtn.href = mirrors[0]?.url || DOWNLOAD_META.releasesUrl;
-    if (dmgUrl) dmgBtn.setAttribute('download', '');
-    else dmgBtn.removeAttribute('download');
+  if (versionEl) {
+    versionEl.textContent = `当前版本 v${version}`;
   }
-}
 
-function renderDownloadMirrors(zipMirrors, dmgMirrors) {
-  const el = document.getElementById('download-mirrors');
-  if (!el) return;
-  const row = (title, mirrors) => {
-    if (!mirrors?.length) return '';
-    const links = mirrors
-      .map((m) => `<a href="${m.url}" rel="noopener" target="_blank">${m.label}</a>`)
-      .join('<span class="sep">·</span>');
-    return `<p class="mirror-row"><span class="mirror-label">${title}</span>${links}</p>`;
-  };
-  el.innerHTML = row('ZIP 下载', zipMirrors) + row('DMG 下载', dmgMirrors);
+  const zipMirrors = mirrorAssetUrl(zipUrl);
+  const dmgMirrors = mirrorAssetUrl(dmgUrl);
+
+  bindDownloadButton(zipBtn, zipMirrors);
+  bindDownloadButton(dmgBtn, dmgMirrors);
+  renderAltLinks(zipAlt, zipMirrors);
+  renderAltLinks(dmgAlt, dmgMirrors);
+
+  if (zipBtn && zipSize) zipBtn.textContent = `下载 ZIP${formatSize(zipSize)}`;
+  if (dmgBtn && dmgSize) dmgBtn.textContent = `下载 DMG${formatSize(dmgSize)}`;
 }
 
 function initHeaderOffset() {
