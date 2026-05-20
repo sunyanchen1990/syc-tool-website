@@ -527,9 +527,18 @@ function initHeaderOffset() {
   });
 }
 
+function initHeroBackground() {
+  const body = document.querySelector('.app-body');
+  if (!body) return;
+  const base = import.meta.env.BASE_URL || './';
+  const img = `${base}hero-bg.jpg`;
+  body.style.backgroundImage = `linear-gradient(180deg, rgba(7, 9, 15, 0.4), rgba(7, 9, 15, 0.85)), url('${img}')`;
+}
+
 renderFeatureTags();
 renderModules();
 renderHero();
+initHeroBackground();
 initFloatBallSection();
 initDownloadSection();
 initReveal();

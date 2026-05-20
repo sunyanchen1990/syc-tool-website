@@ -382,9 +382,9 @@ img {
 .app-body {
   display: flex;
   min-height: 360px;
-  background:
-    linear-gradient(180deg, rgba(7, 9, 15, 0.4), rgba(7, 9, 15, 0.85)),
-    url('hero-bg.jpg') center / cover;
+  background: linear-gradient(180deg, rgba(7, 9, 15, 0.4), rgba(7, 9, 15, 0.85));
+  background-size: cover;
+  background-position: center;
 }
 
 .app-sidebar {

@@ -21,7 +21,15 @@ const heroBgPath = fs.existsSync(path.join(websiteDir, 'public/hero-bg.jpg'))
 const heroUri = toDataUri(heroBgPath, heroBgPath.endsWith('.png') ? 'image/png' : 'image/jpeg');
 
 let css = fs.readFileSync(path.join(websiteDir, 'styles.css'), 'utf8');
-css = css.replace(/url\(['"]\/hero-bg\.(png|jpg)['"]\)/, `url('${heroUri}')`);
+css = css.replace(
+  /\.app-body\s*\{[^}]*background:\s*linear-gradient[^;]+;/,
+  `.app-body {
+  display: flex;
+  min-height: 360px;
+  background:
+    linear-gradient(180deg, rgba(7, 9, 15, 0.4), rgba(7, 9, 15, 0.85)),
+    url('${heroUri}');`
+);
 
 let mainJs = fs.readFileSync(path.join(websiteDir, 'main.js'), 'utf8');
 const heroPanelsJs = fs
