@@ -388,93 +388,39 @@ const DOWNLOAD_META = {
   repo: 'sunyanchen1990/syc-tool',
   repoUrl: 'https://github.com/sunyanchen1990/syc-tool',
   releasesUrl: 'https://github.com/sunyanchen1990/syc-tool/releases/latest',
-  websiteUrl: 'https://sunyanchen1990.github.io/syc-tool-website/',
   fallbackVersion: '1.0.1',
-  rawBase: 'https://raw.githubusercontent.com/sunyanchen1990/syc-tool/main',
 };
 
-function getDownloadMethods(version) {
-  const v = version || DOWNLOAD_META.fallbackVersion;
-  const tag = version ? `v${version}` : `v${DOWNLOAD_META.fallbackVersion}`;
+function getDownloadMethods() {
   return [
     {
       id: 'dmg',
       icon: '💿',
       tag: '推荐',
       title: 'DMG 安装包',
-      desc: '下载后双击，将 SYC-TOOL 拖入「应用程序」即可。',
+      desc: '下载后双击打开，将 SYC-TOOL 拖入「应用程序」文件夹即可。',
       command: null,
       link: DOWNLOAD_META.releasesUrl,
-      linkText: '打开 Releases 页面',
+      linkText: '前往下载页面',
     },
     {
       id: 'brew',
       icon: '🍺',
-      tag: '快捷',
+      tag: '命令行',
       title: 'Homebrew',
-      desc: '已安装 Homebrew 时一条命令完成（Cask）。',
+      desc: '已安装 Homebrew 时，在终端执行以下命令完成安装。',
       command: `brew tap sunyanchen1990/syc-tool\nbrew install --cask syc-tool`,
       link: `${DOWNLOAD_META.repoUrl}/blob/main/Casks/syc-tool.rb`,
       linkText: '查看 Cask 配方',
     },
-    {
-      id: 'curl',
-      icon: '⚡',
-      tag: '脚本',
-      title: '一键安装脚本',
-      desc: '自动下载最新 Release DMG 并安装到 /Applications。',
-      command: `curl -fsSL ${DOWNLOAD_META.rawBase}/scripts/install-release.sh | bash`,
-      link: `${DOWNLOAD_META.repoUrl}/blob/main/scripts/install-release.sh`,
-      linkText: '查看脚本源码',
-    },
-    {
-      id: 'git',
-      icon: '📦',
-      tag: '源码',
-      title: 'Git 克隆构建',
-      desc: '适合开发者：克隆仓库、安装依赖并打包安装到本机。',
-      command: `git clone ${DOWNLOAD_META.repoUrl}.git\ncd syc-tool\nnpm install\nnpm run install:mac`,
-      link: DOWNLOAD_META.repoUrl,
-      linkText: '浏览仓库',
-    },
-    {
-      id: 'dev',
-      icon: '⌨',
-      tag: '开发',
-      title: '本地开发运行',
-      desc: '不打包，直接启动 Vite + Electron 开发模式。',
-      command: `git clone ${DOWNLOAD_META.repoUrl}.git\ncd syc-tool\nnpm install\nnpm run electron:dev`,
-      link: `${DOWNLOAD_META.repoUrl}#快速开始`,
-      linkText: '开发文档',
-    },
-    {
-      id: 'zip',
-      icon: '📁',
-      tag: '便携',
-      title: 'ZIP 压缩包',
-      desc: '解压后可直接运行 SYC-TOOL.app，无需安装程序。',
-      command: null,
-      link: DOWNLOAD_META.releasesUrl,
-      linkText: '下载 ZIP',
-    },
-    {
-      id: 'npm-brew',
-      icon: '🧰',
-      tag: '脚本',
-      title: 'npm / 仓库脚本',
-      desc: '已克隆仓库时，可用内置脚本安装 Release 或走 Homebrew。',
-      command: `npm run install:release   # 下载最新 DMG\nnpm run install:brew      # Homebrew Cask\nnpm run install:mac       # 本地打包安装`,
-      link: `${DOWNLOAD_META.repoUrl}/tree/main/scripts`,
-      linkText: '全部安装脚本',
-    },
   ];
 }
 
-function renderDownloadMethods(version) {
+function renderDownloadMethods() {
   const el = document.getElementById('download-methods');
   if (!el) return;
 
-  el.innerHTML = getDownloadMethods(version)
+  el.innerHTML = getDownloadMethods()
     .map(
       (m) => `
     <article class="download-method" data-method="${m.id}">
@@ -523,10 +469,8 @@ function escapeHtml(s) {
 async function initDownloadSection() {
   const versionEl = document.getElementById('download-version');
   const dmgBtn = document.getElementById('download-dmg-btn');
-  const zipBtn = document.getElementById('download-zip-btn');
   let version = DOWNLOAD_META.fallbackVersion;
   let dmgUrl = null;
-  let zipUrl = null;
 
   try {
     const res = await fetch(`https://api.github.com/repos/${DOWNLOAD_META.repo}/releases/latest`);
@@ -536,15 +480,10 @@ async function initDownloadSection() {
       for (const asset of data.assets || []) {
         const name = asset.name || '';
         if (name.endsWith('arm64.dmg')) dmgUrl = asset.browser_download_url;
-        if (name.endsWith('arm64.zip')) zipUrl = asset.browser_download_url;
       }
       if (!dmgUrl) {
         const dmg = (data.assets || []).find((a) => a.name?.endsWith('.dmg'));
         dmgUrl = dmg?.browser_download_url;
-      }
-      if (!zipUrl) {
-        const zip = (data.assets || []).find((a) => a.name?.endsWith('.zip'));
-        zipUrl = zip?.browser_download_url;
       }
     }
   } catch {
@@ -554,19 +493,16 @@ async function initDownloadSection() {
   if (versionEl) {
     versionEl.textContent = dmgUrl
       ? `最新版本 v${version} · Apple Silicon (arm64)`
-      : `当前文档版本 v${version} · 发布包见 GitHub Releases`;
+      : `当前文档版本 v${version} · 安装包见 GitHub Releases`;
   }
 
   if (dmgBtn) {
     dmgBtn.href = dmgUrl || DOWNLOAD_META.releasesUrl;
     if (dmgUrl) dmgBtn.setAttribute('download', '');
-  }
-  if (zipBtn) {
-    zipBtn.href = zipUrl || DOWNLOAD_META.releasesUrl;
-    if (zipUrl) zipBtn.setAttribute('download', '');
+    else dmgBtn.removeAttribute('download');
   }
 
-  renderDownloadMethods(version);
+  renderDownloadMethods();
 }
 
 function initHeaderOffset() {
