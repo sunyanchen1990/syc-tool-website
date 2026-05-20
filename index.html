@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="SYC-TOOL — macOS 原生效率桌面工具箱：天气、终端、便签、剪贴板、JSON、翻译、系统监控与桌面悬浮球，数据本地优先。"
+    />
+    <title>SYC-TOOL · macOS 效率工具箱</title>
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="grid-bg" aria-hidden="true"></div>
+
+    <header class="site-header" id="top">
+      <nav class="nav container">
+        <a class="brand" href="#top">
+          <img src="/icon.png" alt="" width="32" height="32" class="brand-icon" />
+          <span>SYC-TOOL</span>
+          <span class="brand-tag">v1.0</span>
+        </a>
+        <div class="nav-links">
+          <a href="#features">功能</a>
+          <a href="#float-ball">悬浮球</a>
+          <a href="#highlights">亮点</a>
+          <a href="#modules">模块</a>
+        </div>
+        <a class="btn btn-sm btn-primary nav-cta" href="#download">获取应用</a>
+        <button class="nav-toggle" type="button" aria-label="打开菜单" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="container hero-inner">
+          <div class="hero-copy reveal">
+            <p class="eyebrow">
+              <span class="pulse-dot"></span>
+              macOS 原生 · 本地优先
+            </p>
+            <h1>
+              一块屏幕，<br />
+              <span class="gradient-text">十二种效率</span>
+            </h1>
+            <p class="hero-lead">
+              SYC-TOOL 将天气、终端、便签、剪贴板历史、JSON 工具、翻译、系统监控等能力收进一块毛玻璃面板。
+              失焦自动收起为桌面悬浮球，随时一键唤回。
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#download">免费下载 macOS 版</a>
+              <a class="btn btn-ghost" href="#modules">浏览全部模块</a>
+            </div>
+            <ul class="hero-stats">
+              <li><strong>12</strong><span>功能模块</span></li>
+              <li><strong>0</strong><span>强制联网账号</span></li>
+              <li><strong>∞</strong><span>本机数据归属你</span></li>
+            </ul>
+          </div>
+
+          <div class="hero-visual reveal reveal-delay">
+            <div class="app-window" id="hero-app">
+              <div class="app-titlebar">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="app-title">SYC-TOOL</span>
+              </div>
+              <div class="app-body">
+                <aside class="app-sidebar" id="hero-sidebar"></aside>
+                <div class="app-panel" id="hero-panel"></div>
+              </div>
+            </div>
+            <div class="float-ball-demo" aria-hidden="true">
+              <iframe
+                class="float-ball-hero-embed"
+                src="/float-ball-embed.html?interactive=1&auto=1"
+                title="桌面悬浮球"
+                tabindex="-1"
+              ></iframe>
+              <span class="ball-hint">失焦收起</span>
+            </div>
+          </div>
+        </div>
+        <div class="scroll-hint" aria-hidden="true">
+          <span>向下探索</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
+        </div>
+      </section>
+
+      <!-- Float ball -->
+      <section class="section float-ball-section" id="float-ball">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="eyebrow">桌面伴侣</p>
+            <h2>原生悬浮宠物球，<span class="gradient-text">会呼吸的小亮点</span></h2>
+            <p class="section-desc">
+              与 App 内完全相同的 SVG 宠物球：失焦后收起为独立置顶窗口，透明背景、不抢焦点。
+              下方为实机同款表情与交互演示（非 emoji 占位）。
+            </p>
+          </header>
+
+          <div class="float-ball-layout reveal">
+            <div class="float-ball-copy">
+              <h3>它能做什么</h3>
+              <ul class="float-ball-features">
+                <li><strong>失焦收起</strong> — 主窗口失焦后自动缩为桌面悬浮球，不占任务栏焦点</li>
+                <li><strong>单击唤回</strong> — 点击宠物球立即恢复主窗口并聚焦</li>
+                <li><strong>自由拖动</strong> — 按住拖动到任意位置，松手后记住坐标</li>
+                <li><strong>眼神跟随</strong> — 鼠标靠近时瞳孔朝向光标微微偏移</li>
+                <li><strong>沉睡模式</strong> — 约 26 秒无操作后闭眼打盹，冒出 Zzz</li>
+                <li><strong>拖拽生气</strong> — 快速甩动时皱眉冒蒸汽、身体轻颤</li>
+                <li><strong>开心蹦跶</strong> — 单击或随机触发蹦跳动画</li>
+                <li><strong>始终置顶</strong> — 透明无边框、鼠标穿透外区域，贴边也不挡操作</li>
+              </ul>
+              <a class="btn btn-ghost btn-sm" href="#download">安装后亲自体验</a>
+            </div>
+
+            <div class="float-ball-arena" id="float-ball-arena">
+              <div class="float-ball-stage">
+                <div class="float-ball-stage-glow" aria-hidden="true"></div>
+                <iframe
+                  id="float-ball-main-embed"
+                  class="float-ball-main-embed"
+                  src="/float-ball-embed.html?interactive=1&auto=1"
+                  title="悬浮球交互演示"
+                ></iframe>
+              </div>
+              <p class="float-ball-tip">在舞台区移动鼠标、拖动或单击小球，体验与 macOS 版一致的行为</p>
+            </div>
+          </div>
+
+          <div class="float-ball-states reveal">
+            <p class="float-ball-states-label">六种状态一览 · 点击切换主舞台</p>
+            <div class="float-ball-state-grid" role="tablist" aria-label="悬浮球表情">
+              <button
+                type="button"
+                class="float-ball-state-card active"
+                role="tab"
+                aria-selected="true"
+                data-ball-state="awake"
+              >
+                <span class="float-ball-state-frame">
+                  <iframe
+                    src="/float-ball-embed.html?state=awake&auto=0&interactive=0"
+                    title="日常"
+                    tabindex="-1"
+                  ></iframe>
+                </span>
+                <span class="float-ball-state-name">日常</span>
+                <span class="float-ball-state-desc">眨眼 · 漂浮 · 星星</span>
+              </button>
+              <button
+                type="button"
+                class="float-ball-state-card"
+                role="tab"
+                aria-selected="false"
+                data-ball-state="sleep"
+              >
+                <span class="float-ball-state-frame">
+                  <iframe
+                    src="/float-ball-embed.html?state=sleep&auto=0&interactive=0"
+                    title="睡觉"
+                    tabindex="-1"
+                  ></iframe>
+                </span>
+                <span class="float-ball-state-name">睡觉</span>
+                <span class="float-ball-state-desc">闭眼 · Zzz 漂浮</span>
+              </button>
+              <button
+                type="button"
+                class="float-ball-state-card"
+                role="tab"
+                aria-selected="false"
+                data-ball-state="angry"
+              >
+                <span class="float-ball-state-frame">
+                  <iframe
+                    src="/float-ball-embed.html?state=angry&auto=0&interactive=0"
+                    title="生气"
+                    tabindex="-1"
+                  ></iframe>
+                </span>
+                <span class="float-ball-state-name">生气</span>
+                <span class="float-ball-state-desc">快速拖拽触发</span>
+              </button>
+              <button
+                type="button"
+                class="float-ball-state-card"
+                role="tab"
+                aria-selected="false"
+                data-ball-state="happy"
+              >
+                <span class="float-ball-state-frame">
+                  <iframe
+                    src="/float-ball-embed.html?state=happy&auto=0&interactive=0"
+                    title="蹦跶"
+                    tabindex="-1"
+                  ></iframe>
+                </span>
+                <span class="float-ball-state-name">蹦跶</span>
+                <span class="float-ball-state-desc">单击或随机开心</span>
+              </button>
+              <button
+                type="button"
+                class="float-ball-state-card"
+                role="tab"
+                aria-selected="false"
+                data-ball-state="drag"
+              >
+                <span class="float-ball-state-frame">
+                  <iframe
+                    src="/float-ball-embed.html?state=drag&auto=0&interactive=0"
+                    title="拖拽"
+                    tabindex="-1"
+                  ></iframe>
+                </span>
+                <span class="float-ball-state-name">拖拽</span>
+                <span class="float-ball-state-desc">眯眼 · 抓紧移动</span>
+              </button>
+              <button
+                type="button"
+                class="float-ball-state-card"
+                role="tab"
+                aria-selected="false"
+                data-ball-state="look"
+              >
+                <span class="float-ball-state-frame float-ball-state-frame--look">
+                  <iframe
+                    src="/float-ball-embed.html?state=look&auto=0&interactive=0"
+                    title="眼神跟随"
+                    tabindex="-1"
+                    data-look-preview="1"
+                  ></iframe>
+                </span>
+                <span class="float-ball-state-name">眼神</span>
+                <span class="float-ball-state-desc">瞳孔偏向一侧 · 可跟随鼠标</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Highlights -->
+      <section class="section highlights" id="highlights">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="eyebrow">产品哲学</p>
+            <h2>为 Mac 桌面而生，<span class="gradient-text">不打扰却总在</span></h2>
+          </header>
+          <div class="highlight-grid">
+            <article class="highlight-card reveal">
+              <div class="highlight-icon">◇</div>
+              <h3>毛玻璃一体面板</h3>
+              <p>全局背景与半透明面板叠加，模块切换无整页跳转，视觉连续、操作路径极短。</p>
+            </article>
+            <article class="highlight-card reveal reveal-delay">
+              <div class="highlight-icon">◉</div>
+              <h3>桌面悬浮球</h3>
+              <p>窗口失焦后收为悬浮宠物球，支持睡眠、拖拽生气与鼠标跟随；单击即可恢复主窗口。<a href="#float-ball">查看全部表情 →</a></p>
+            </article>
+            <article class="highlight-card reveal reveal-delay-2">
+              <div class="highlight-icon">⬡</div>
+              <h3>按需加载与休眠</h3>
+              <p>仅挂载你打开过的标签；离开标签时暂停动画与轮询，把 CPU 留给真正在用的功能。</p>
+            </article>
+            <article class="highlight-card reveal reveal-delay-3">
+              <div class="highlight-icon">⌘</div>
+              <h3>本机终端与数据</h3>
+              <p>终端走本机 zsh；便签、剪贴板历史、设置均落在本地，无需注册即可完整使用。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature tags -->
+      <section class="section features-strip" id="features">
+        <div class="container">
+          <p class="features-label reveal">十二模块 · 一键切换</p>
+          <div class="feature-tags reveal" id="feature-tags"></div>
+        </div>
+      </section>
+
+      <!-- Modules -->
+      <section class="section modules" id="modules">
+        <div class="container">
+          <header class="section-head reveal">
+            <p class="eyebrow">功能详解</p>
+            <h2>每个模块，<span class="gradient-text">都有用武之地</span></h2>
+            <p class="section-desc">涵盖十二项能力说明与实机界面截图，所见即所得。</p>
+          </header>
+          <div class="module-list" id="module-list"></div>
+        </div>
+      </section>
+
+      <!-- Download -->
+      <section class="section download" id="download">
+        <div class="container">
+          <div class="download-card reveal">
+            <div class="download-glow" aria-hidden="true"></div>
+            <p class="eyebrow">开始使用</p>
+            <h2>下载 SYC-TOOL</h2>
+            <p>当前面向 <strong>macOS</strong>，安装后即可在「应用程序」中随时打开，数据保存在本机。</p>
+            <div class="download-actions">
+              <a class="btn btn-primary btn-lg" href="#modules">查看功能模块</a>
+              <span class="download-note">支持 Apple Silicon 与 Intel 芯片</span>
+            </div>
+            <ul class="download-checklist">
+              <li>✓ 无订阅、无广告</li>
+              <li>✓ 数据本地存储</li>
+              <li>✓ 支持开机自启（可选）</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© 2026 SYC-TOOL · 本机效率工具箱</p>
+        <a href="#top">回到顶部</a>
+      </div>
+    </footer>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
